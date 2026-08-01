@@ -122,7 +122,7 @@ const iconButton =
         <RotateCcw class="h-4 w-4" aria-hidden="true" />
       </button>
       <a
-        href="https://github.com/your-org/json-for-humans"
+        href="https://github.com/Thileepan/json-for-humans"
         target="_blank"
         rel="noopener noreferrer"
         :class="iconButton"

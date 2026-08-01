@@ -87,7 +87,7 @@ The site ships as two static pages:
 Requires Node.js 18+.
 
 ```bash
-git clone https://github.com/your-org/json-for-humans.git
+git clone https://github.com/Thileepan/json-for-humans.git
 cd json-for-humans
 npm install
 npm run dev        # start dev server: / is the landing page, /app.html is the app
