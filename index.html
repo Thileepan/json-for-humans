@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSON for Humans — Turn ugly JSON into something anyone can understand</title>
+    <meta
+      name="description"
+      content="JSON for Humans turns raw API responses into clean, readable reports anyone on your team can understand. Free, open source, and 100% in your browser — your JSON is never uploaded."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%7B%7D%3C/text%3E%3C/svg%3E"
+    />
+    <style>
+      :root {
+        --paper: #faf8f3;
+        --ink: #1c2b24;
+        --ink-soft: #4c5f55;
+        --ink-faint: #7d8c84;
+        --green: #2f8a5f;
+        --green-deep: #1d583e;
+        --green-tint: #e7f2ec;
+        --amber: #b45309;
+        --card: #ffffff;
+        --line: #e3ded2;
+        --code-bg: #14211b;
+        --code-ink: #cfe3d8;
+        --shadow: 0 1px 2px rgba(28, 43, 36, 0.06), 0 12px 32px -12px rgba(28, 43, 36, 0.18);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --paper: #101714;
+          --ink: #e8efe9;
+          --ink-soft: #a9bbb0;
+          --ink-faint: #71837a;
+          --green: #4da67a;
+          --green-deep: #7cc19d;
+          --green-tint: #17251e;
+          --amber: #d9964a;
+          --card: #17201b;
+          --line: #26332c;
+          --code-bg: #0b110e;
+          --code-ink: #b9d2c5;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        background: var(--paper);
+        color: var(--ink);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .display {
+        font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+        line-height: 1.12;
+      }
+      a {
+        color: var(--green);
+      }
+      .wrap {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      code,
+      pre {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      /* ---------- nav ---------- */
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px 0;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--ink);
+        font-weight: 700;
+      }
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--green);
+        color: #fff;
+        font-family: ui-monospace, monospace;
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .nav-links {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        font-size: 14px;
+      }
+      .nav-links a {
+        color: var(--ink-soft);
+        text-decoration: none;
+      }
+      .nav-links a:hover {
+        color: var(--ink);
+      }
+
+      .btn {
+        display: inline-block;
+        border-radius: 10px;
+        padding: 11px 20px;
+        font-size: 15px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1.5px solid transparent;
+        transition:
+          transform 0.12s ease,
+          box-shadow 0.12s ease;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+      .btn-primary {
+        background: var(--green);
+        color: #fff;
+        box-shadow: var(--shadow);
+      }
+      .btn-primary:hover {
+        background: var(--green-deep);
+      }
+      @media (prefers-color-scheme: dark) {
+        .btn-primary:hover {
+          background: var(--green);
+          filter: brightness(1.1);
+        }
+      }
+      .btn-ghost {
+        border-color: var(--line);
+        color: var(--ink);
+        background: var(--card);
+      }
+      .btn-small {
+        padding: 8px 14px;
+        font-size: 13.5px;
+        border-radius: 8px;
+      }
+
+      /* ---------- hero ---------- */
+      .hero {
+        padding: 72px 0 88px;
+        text-align: center;
+      }
+      @media (max-width: 780px) {
+        .hero {
+          padding: 48px 0 64px;
+        }
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--green);
+        background: var(--green-tint);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 6px 14px;
+        margin-bottom: 26px;
+      }
+      .hero h1 {
+        font-size: clamp(2.4rem, 6vw, 4.2rem);
+        max-width: 17ch;
+        margin: 0 auto 20px;
+      }
+      .hero h1 .flourish {
+        position: relative;
+        white-space: nowrap;
+        color: var(--green);
+      }
+      .hero h1 .flourish svg {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -0.18em;
+        width: 100%;
+        height: 0.3em;
+      }
+      .hero .sub {
+        font-size: clamp(1.05rem, 2vw, 1.25rem);
+        color: var(--ink-soft);
+        max-width: 56ch;
+        margin: 0 auto 30px;
+      }
+      .hero-ctas {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+      }
+      .privacy-note {
+        font-size: 14px;
+        color: var(--ink-faint);
+      }
+      .privacy-note strong {
+        color: var(--ink-soft);
+      }
+
+      /* ---------- before / after ---------- */
+      .demo {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: stretch;
+        gap: 18px;
+        margin: 64px auto 0;
+        max-width: 940px;
+        text-align: left;
+      }
+      @media (max-width: 780px) {
+        .demo {
+          grid-template-columns: 1fr;
+        }
+        .demo-arrow {
+          transform: rotate(90deg);
+          justify-self: center;
+        }
+      }
+      .pane {
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--line);
+        display: flex;
+        flex-direction: column;
+      }
+      .pane-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding: 10px 16px;
+      }
+      .pane-json {
+        transform: rotate(-0.6deg);
+      }
+      .pane-json .pane-head {
+        background: #0d1712;
+        color: #7d9488;
+      }
+      .pane-json pre {
+        background: var(--code-bg);
+        color: var(--code-ink);
+        padding: 20px 22px;
+        font-size: 13.5px;
+        line-height: 1.7;
+        overflow-x: auto;
+        flex: 1;
+      }
+      .j-key {
+        color: #8fd0ae;
+      }
+      .j-str {
+        color: #e6c98a;
+      }
+      .j-num {
+        color: #9ec5e8;
+      }
+      .j-bool {
+        color: #c9a7e0;
+      }
+      .demo-arrow {
+        align-self: center;
+        color: var(--green);
+        font-size: 26px;
+      }
+      .pane-human {
+        background: var(--card);
+        transform: rotate(0.6deg);
+      }
+      .pane-human .pane-head {
+        background: var(--green-tint);
+        color: var(--green-deep);
+        border-bottom: 1px solid var(--line);
+      }
+      .report {
+        padding: 20px 24px 24px;
+      }
+      .report h3 {
+        font-family: Georgia, serif;
+        font-size: 1.35rem;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 10px;
+        margin-bottom: 14px;
+      }
+      .report dl {
+        display: grid;
+        gap: 12px;
+      }
+      .report dt {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+      }
+      .report dd {
+        font-size: 15px;
+      }
+      .pill {
+        display: inline-block;
+        background: #fdf3e4;
+        color: var(--amber);
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 2px 10px;
+      }
+      @media (prefers-color-scheme: dark) {
+        .pill {
+          background: #2b2115;
+        }
+      }
+
+      /* ---------- sections ---------- */
+      section {
+        padding: 112px 0 96px;
+        scroll-margin-top: 24px;
+      }
+      @media (max-width: 780px) {
+        section {
+          padding: 80px 0 64px;
+        }
+      }
+      .section-head {
+        text-align: center;
+        max-width: 60ch;
+        margin: 0 auto 56px;
+      }
+      .section-head h2 {
+        font-size: clamp(1.7rem, 3.6vw, 2.4rem);
+        margin-bottom: 16px;
+      }
+      .section-head p {
+        color: var(--ink-soft);
+        font-size: 1.05rem;
+      }
+
+      /* personas */
+      .personas {
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        background: var(--card);
+      }
+      .persona-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 28px;
+      }
+      .persona {
+        text-align: center;
+      }
+      .persona .glyph {
+        font-size: 26px;
+        margin-bottom: 10px;
+      }
+      .persona h3 {
+        font-size: 1rem;
+        margin-bottom: 6px;
+      }
+      .persona p {
+        font-size: 14px;
+        color: var(--ink-soft);
+      }
+
+      /* features */
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+      }
+      .feature {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 24px;
+        box-shadow: var(--shadow);
+      }
+      .feature .tag {
+        display: inline-block;
+        font-family: ui-monospace, monospace;
+        font-size: 12px;
+        color: var(--green-deep);
+        background: var(--green-tint);
+        border-radius: 6px;
+        padding: 3px 8px;
+        margin-bottom: 12px;
+      }
+      .feature h3 {
+        font-size: 1.08rem;
+        margin-bottom: 8px;
+      }
+      .feature p {
+        font-size: 14.5px;
+        color: var(--ink-soft);
+      }
+      .feature p code {
+        font-size: 13px;
+        background: var(--green-tint);
+        border-radius: 4px;
+        padding: 1px 5px;
+      }
+
+      /* privacy */
+      .privacy {
+        background: var(--code-bg);
+        color: #dcebe2;
+      }
+      .privacy .section-head h2,
+      .privacy .section-head p {
+        color: inherit;
+      }
+      .privacy .section-head p {
+        opacity: 0.75;
+      }
+      .privacy-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 18px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .privacy-item {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        padding: 18px 20px;
+        font-size: 14.5px;
+      }
+      .privacy-item strong {
+        display: block;
+        margin-bottom: 4px;
+        color: #a9e0c4;
+      }
+      .privacy-verify {
+        text-align: center;
+        margin-top: 34px;
+        font-size: 14px;
+        opacity: 0.7;
+      }
+      .privacy-verify a {
+        color: #a9e0c4;
+      }
+
+      /* steps */
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 26px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .step {
+        text-align: center;
+        padding: 0 10px;
+      }
+      .step .num {
+        display: grid;
+        place-items: center;
+        width: 46px;
+        height: 46px;
+        margin: 0 auto 14px;
+        border-radius: 50%;
+        background: var(--green-tint);
+        color: var(--green-deep);
+        font-family: Georgia, serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+        border: 1.5px dashed var(--green);
+      }
+      .step h3 {
+        margin-bottom: 6px;
+        font-size: 1.05rem;
+      }
+      .step p {
+        font-size: 14.5px;
+        color: var(--ink-soft);
+      }
+
+      /* open source + final cta */
+      .oss {
+        border-top: 1px solid var(--line);
+        background: var(--card);
+        text-align: center;
+      }
+      .oss h2 {
+        margin-bottom: 8px;
+      }
+      .oss .badges {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 26px 0 34px;
+        font-size: 13px;
+      }
+      .badge {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 5px 14px;
+        color: var(--ink-soft);
+        background: var(--paper);
+      }
+
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 34px 0 44px;
+        font-size: 14px;
+        color: var(--ink-faint);
+      }
+      .foot {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+      .foot .links {
+        margin-left: auto;
+        display: flex;
+        gap: 18px;
+      }
+      .foot a {
+        color: var(--ink-soft);
+        text-decoration: none;
+      }
+      .foot a:hover {
+        color: var(--ink);
+      }
+      .foot .byline a {
+        color: var(--green);
+        text-decoration: underline;
+        text-decoration-color: var(--line);
+        text-underline-offset: 3px;
+      }
+      .foot .byline a:hover {
+        color: var(--green-deep);
+        text-decoration-color: var(--green);
+      }
+      .heart {
+        color: var(--green);
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="wrap nav">
+      <a class="brand" href="./">
+        <span class="brand-mark" aria-hidden="true">{ }</span>
+        JSON for Humans
+      </a>
+      <nav class="nav-links" aria-label="Main">
+        <a href="#features">Features</a>
+        <a href="#privacy">Privacy</a>
+        <a href="https://github.com/your-org/json-for-humans" rel="noopener noreferrer">GitHub</a>
+        <a class="btn btn-primary btn-small" href="./app.html">Open the app</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ============ HERO ============ -->
+      <section class="hero">
+        <div class="wrap">
+          <p class="eyebrow">Free · Open source · 100% in your browser</p>
+          <h1 class="display">
+            JSON is for machines.<br />
+            <span class="flourish"
+              >This is for humans.
+              <svg viewBox="0 0 220 12" preserveAspectRatio="none" aria-hidden="true">
+                <path
+                  d="M3 9 C 40 2, 75 2, 110 7 S 180 12, 217 5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  opacity="0.45"
+                />
+              </svg>
+            </span>
+          </h1>
+          <p class="sub">
+            Paste any API response, export, or config file and get a clean, readable report your
+            whole team can understand — snake_case decoded, dates translated, statuses spelled out.
+            No accounts. No uploads. No AI required.
+          </p>
+          <div class="hero-ctas">
+            <a class="btn btn-primary" href="./app.html">Open the app — it's free</a>
+            <a
+              class="btn btn-ghost"
+              href="https://github.com/your-org/json-for-humans"
+              rel="noopener noreferrer"
+              >View on GitHub</a
+            >
+          </div>
+          <p class="privacy-note">
+            🔒 <strong>Your JSON stays in your browser and is never uploaded.</strong>
+          </p>
+
+          <!-- before / after -->
+          <div class="demo">
+            <div class="pane pane-json">
+              <div class="pane-head">What the API sends</div>
+              <pre>{
+  <span class="j-key">"order_id"</span>: <span class="j-num">123</span>,
+  <span class="j-key">"customer_name"</span>: <span class="j-str">"Ravi Kumar"</span>,
+  <span class="j-key">"payment_status"</span>: <span class="j-str">"PAYMENT_PENDING"</span>,
+  <span class="j-key">"is_deleted"</span>: <span class="j-bool">false</span>,
+  <span class="j-key">"created_at"</span>: <span class="j-str">"2026-08-01T09:30:00Z"</span>
+}</pre>
+            </div>
+            <div class="demo-arrow" aria-hidden="true">⇢</div>
+            <div class="pane pane-human">
+              <div class="pane-head">What your team reads</div>
+              <div class="report">
+                <h3>Order #123</h3>
+                <dl>
+                  <div>
+                    <dt>Customer Name</dt>
+                    <dd>Ravi Kumar</dd>
+                  </div>
+                  <div>
+                    <dt>Payment Status</dt>
+                    <dd><span class="pill">Payment Pending</span></dd>
+                  </div>
+                  <div>
+                    <dt>Deleted</dt>
+                    <dd>No</dd>
+                  </div>
+                  <div>
+                    <dt>Created At</dt>
+                    <dd>August 1, 2026 at 3:00 PM</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PERSONAS ============ -->
+      <section class="personas">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 class="display">Made for the whole team</h2>
+            <p>The data doesn't change. The audience does.</p>
+          </div>
+          <div class="persona-grid">
+            <div class="persona">
+              <div class="glyph" aria-hidden="true">🧑‍💻</div>
+              <h3>Developers</h3>
+              <p>Explain an API response without giving a lecture on camelCase.</p>
+            </div>
+            <div class="persona">
+              <div class="glyph" aria-hidden="true">🎧</div>
+              <h3>Support teams</h3>
+              <p>Read error payloads with confidence — statuses in plain words, not ALL_CAPS.</p>
+            </div>
+            <div class="persona">
+              <div class="glyph" aria-hidden="true">📊</div>
+              <h3>Product managers</h3>
+              <p>Inspect real data yourself instead of filing a ticket to ask what it means.</p>
+            </div>
+            <div class="persona">
+              <div class="glyph" aria-hidden="true">🤝</div>
+              <h3>Everyone else</h3>
+              <p>Turn a wall of braces into a document you can actually share in a meeting.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ FEATURES ============ -->
+      <section id="features">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 class="display">Deterministic magic. No black boxes.</h2>
+            <p>
+              Every transformation is a readable rule, not a guess — the same input always gives the
+              same output. Here's what the engine does the moment you paste.
+            </p>
+          </div>
+          <div class="feature-grid">
+            <div class="feature">
+              <span class="tag">five views</span>
+              <h3>Read it your way</h3>
+              <p>
+                Document for reports, Cards for overviews, a sortable Table for arrays (with CSV
+                export), Tree for structure, Raw for the purists. Same data, one click apart.
+              </p>
+            </div>
+            <div class="feature">
+              <span class="tag">smart formatting</span>
+              <h3>Speaks fluent JSON</h3>
+              <p>
+                <code>user_id</code> → <code>User ID</code>, <code>PAYMENT_PENDING</code> →
+                <code>Payment Pending</code>, <code>true</code> → <code>Yes</code>, timestamps →
+                real dates in your timezone, <code>0.85</code> → <code>85%</code>. Acronyms like
+                URL, UUID and OTP survive intact.
+              </p>
+            </div>
+            <div class="feature">
+              <span class="tag">compare</span>
+              <h3>Spot the difference</h3>
+              <p>
+                Paste two versions and get plain-English sentences: “Payment Status changed from
+                Pending to Completed.” No more eyeballing diffs at 2 a.m.
+              </p>
+            </div>
+            <div class="feature">
+              <span class="tag">custom schema</span>
+              <h3>Your data, your labels</h3>
+              <p>
+                Map <code>status: 2</code> to “Approved”, attach currencies, rename anything — with
+                nested paths like <code>orders[].amount</code>. Schema always wins over
+                auto-detection.
+              </p>
+            </div>
+            <div class="feature">
+              <span class="tag">export</span>
+              <h3>Share it readable</h3>
+              <p>
+                Copy or download as plain text, Markdown, script-free HTML, CSV or a print-ready
+                page. Everything is escaped; nothing executable ever leaves the exporter.
+              </p>
+            </div>
+            <div class="feature">
+              <span class="tag">search &amp; filters</span>
+              <h3>Find anything, hide the noise</h3>
+              <p>
+                Search names and values across any nesting depth. Hide nulls, empties and technical
+                IDs when you only want the story, not the plumbing.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PRIVACY ============ -->
+      <section id="privacy" class="privacy">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 class="display">Private by design, not by promise</h2>
+            <p>
+              You paste production data into this tool. We built it so you never have to trust us
+              with it.
+            </p>
+          </div>
+          <div class="privacy-grid">
+            <div class="privacy-item">
+              <strong>No backend</strong>
+              A static page and nothing else. There is no server to send your JSON to.
+            </div>
+            <div class="privacy-item">
+              <strong>No network calls</strong>
+              Parsing, formatting, comparing and exporting all happen in your browser tab.
+            </div>
+            <div class="privacy-item">
+              <strong>No tracking</strong>
+              No analytics, no cookies, no fingerprinting. Not "anonymized" — absent.
+            </div>
+            <div class="privacy-item">
+              <strong>No storage</strong>
+              Your JSON lives in page memory and dies with the tab. Settings persist only if you opt
+              in.
+            </div>
+            <div class="privacy-item">
+              <strong>Works offline</strong>
+              Once loaded, pull the network cable. Everything keeps working.
+            </div>
+            <div class="privacy-item">
+              <strong>Open source</strong>
+              MIT-licensed and auditable. Don't take our word for any of this — read the code.
+            </div>
+          </div>
+          <p class="privacy-verify">
+            Skeptical? Good. Open DevTools → Network, paste your JSON, and watch nothing happen.
+            <a href="https://github.com/your-org/json-for-humans" rel="noopener noreferrer"
+              >Audit the source →</a
+            >
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ HOW IT WORKS ============ -->
+      <section>
+        <div class="wrap">
+          <div class="section-head">
+            <h2 class="display">Three steps. No manual.</h2>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <div class="num">1</div>
+              <h3>Paste</h3>
+              <p>
+                Drop in JSON from anywhere — an API response, a log line, a config file, a 5 MB
+                export.
+              </p>
+            </div>
+            <div class="step">
+              <div class="num">2</div>
+              <h3>Read</h3>
+              <p>
+                Get an instant, human-readable report. Switch views, search, filter, compare
+                versions.
+              </p>
+            </div>
+            <div class="step">
+              <div class="num">3</div>
+              <h3>Share</h3>
+              <p>
+                Copy it into a ticket, export Markdown for your wiki, or print a clean page for the
+                meeting.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ OSS / FINAL CTA ============ -->
+      <section class="oss">
+        <div class="wrap">
+          <h2 class="display" style="font-size: clamp(1.7rem, 3.6vw, 2.4rem)">
+            Free forever. Yours to inspect.
+          </h2>
+          <div class="badges">
+            <span class="badge">MIT License</span>
+            <span class="badge">Vue 3 + Vite</span>
+            <span class="badge">No dependencies on any server</span>
+            <span class="badge">Contributions welcome</span>
+          </div>
+          <div class="hero-ctas">
+            <a class="btn btn-primary" href="./app.html">Try it with your JSON</a>
+            <a
+              class="btn btn-ghost"
+              href="https://github.com/your-org/json-for-humans"
+              rel="noopener noreferrer"
+              >Star on GitHub</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap foot">
+        <span
+          >© 2026 JSON for Humans contributors · Turn ugly JSON into something anyone can
+          understand.</span
+        >
+        <span class="byline"
+          >Built with <span class="heart" aria-hidden="true">♥</span
+          ><span class="sr-only">love</span> by
+          <a href="https://x.com/sktgthill" rel="noopener noreferrer">Thileepan</a></span
+        >
+        <span class="links">
+          <a href="./app.html">App</a>
+          <a href="#features">Features</a>
+          <a href="#privacy">Privacy</a>
+          <a href="https://github.com/your-org/json-for-humans" rel="noopener noreferrer">GitHub</a>
+        </span>
+      </div>
+    </footer>
+  </body>
+</html>
