@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { ChevronRight } from 'lucide-vue-next'
+import HighlightedText from './HighlightedText.vue'
 import NodeValue from './NodeValue.vue'
 
 const props = defineProps({
@@ -76,7 +77,7 @@ const summary = computed(() => {
       @click="emit('select', node.path)"
     >
       <span v-if="node.label" class="shrink-0 text-sm text-slate-500 dark:text-slate-400">
-        {{ node.label }}:
+        <HighlightedText :text="node.label" :node="node" />:
       </span>
       <span class="min-w-0 text-sm text-slate-800 dark:text-slate-100">
         <NodeValue :node="node" />

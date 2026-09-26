@@ -11,6 +11,7 @@ import TreeView from './TreeView.vue'
 import RawView from './RawView.vue'
 import ExportMenu from '../export/ExportMenu.vue'
 import { useHumanizedJson } from '../../composables/useHumanizedJson.js'
+import { provideSearchHighlight } from '../../composables/useSearchHighlight.js'
 import { useJsonStore } from '../../stores/jsonStore.js'
 import { useSettingsStore } from '../../stores/settingsStore.js'
 import { useUiStore } from '../../stores/uiStore.js'
@@ -20,7 +21,19 @@ const settingsStore = useSettingsStore()
 const uiStore = useUiStore()
 const { viewMode } = storeToRefs(uiStore)
 
-const { tree, filteredTree, totalFields, visibleFields } = useHumanizedJson()
+const {
+  tree,
+  filteredTree,
+  query,
+  totalFields,
+  visibleFields,
+  totalRows,
+  visibleRows,
+  searchableFields,
+} = useHumanizedJson()
+
+// Shared once with the whole render tree so every value can mark its matches.
+provideSearchHighlight(query)
 
 const hasResult = computed(() => !!tree.value && jsonStore.parsedValue !== undefined)
 
@@ -44,7 +57,14 @@ const density = computed(() => settingsStore.settings.density)
     >
       <ViewModeSelector v-model="viewMode" :table-available="tableRecommended" />
       <div class="ml-auto flex items-center gap-1.5">
-        <SearchBar :match-count="visibleFields" :total-count="totalFields" />
+        <SearchBar
+          :match-count="visibleFields"
+          :total-count="totalFields"
+          :row-count="visibleRows"
+          :total-rows="totalRows"
+          :fields="searchableFields"
+          :view-mode="viewMode"
+        />
         <ExportMenu
           :tree="filteredTree"
           :raw-value="jsonStore.parsedValue"

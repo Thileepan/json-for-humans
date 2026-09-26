@@ -6,6 +6,7 @@ export const useUiStore = defineStore('ui', () => {
   const workspaceMode = ref('humanize') // 'humanize' | 'compare'
   const viewMode = ref('document') // 'cards' | 'document' | 'table' | 'tree' | 'raw'
   const searchQuery = ref('')
+  const searchCaseSensitive = ref(false)
   const hideNulls = ref(false)
   const hideEmpty = ref(false)
   const hideIds = ref(false)
@@ -26,6 +27,7 @@ export const useUiStore = defineStore('ui', () => {
 
   function resetFilters() {
     searchQuery.value = ''
+    searchCaseSensitive.value = false
     hideNulls.value = false
     hideEmpty.value = false
     hideIds.value = false
@@ -35,6 +37,7 @@ export const useUiStore = defineStore('ui', () => {
     workspaceMode,
     viewMode,
     searchQuery,
+    searchCaseSensitive,
     hideNulls,
     hideEmpty,
     hideIds,

@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { Check, Copy } from 'lucide-vue-next'
+import HighlightedText from './HighlightedText.vue'
 import { safeHref } from '../../core/detector/detectLink.js'
 import { useClipboard } from '../../composables/useClipboard.js'
 
@@ -33,8 +34,8 @@ const isMuted = computed(() => ['null', 'empty'].includes(props.node.detectedTyp
       target="_blank"
       rel="noopener noreferrer"
       class="break-all text-brand-600 underline decoration-brand-300 underline-offset-2 hover:text-brand-700 dark:text-brand-400"
-      >{{ node.displayValue }}</a
-    >
+      ><HighlightedText :text="node.displayValue" :node="node"
+    /></a>
     <span
       v-else
       class="min-w-0 break-words"
@@ -42,8 +43,8 @@ const isMuted = computed(() => ['null', 'empty'].includes(props.node.detectedTyp
         'font-mono text-[0.9em]': node.meta?.monospace,
         'italic text-slate-400 dark:text-slate-500': isMuted,
       }"
-      >{{ node.displayValue }}</span
-    >
+      ><HighlightedText :text="node.displayValue" :node="node"
+    /></span>
     <button
       v-if="node.meta?.isId"
       type="button"

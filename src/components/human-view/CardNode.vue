@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
+import HighlightedText from './HighlightedText.vue'
 import NodeValue from './NodeValue.vue'
 
 /**
@@ -64,7 +65,7 @@ const asCard = computed(() => props.depth <= 1)
           <dt
             class="text-[0.7rem] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500"
           >
-            {{ field.label }}
+            <HighlightedText :text="field.label" :node="field" />
           </dt>
           <dd class="mt-0.5 text-sm text-slate-800 dark:text-slate-100">
             <NodeValue :node="field" />

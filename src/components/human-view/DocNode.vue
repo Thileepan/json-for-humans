@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
+import HighlightedText from './HighlightedText.vue'
 import NodeValue from './NodeValue.vue'
 
 /** Recursive section renderer for the Document view. */
@@ -23,7 +24,7 @@ const headingLevel = computed(() => Math.min(props.depth + 2, 6))
       v-if="node.label"
       class="text-[0.7rem] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500"
     >
-      {{ node.label }}
+      <HighlightedText :text="node.label" :node="node" />
     </p>
     <p class="mt-0.5 text-sm text-slate-800 dark:text-slate-100">
       <NodeValue :node="node" />
@@ -37,7 +38,7 @@ const headingLevel = computed(() => Math.min(props.depth + 2, 6))
       class="mb-2 mt-1 border-b border-slate-100 pb-1.5 font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
       :class="depth <= 1 ? 'text-base' : 'text-sm'"
     >
-      {{ node.label }}
+      <HighlightedText :text="node.label" :node="node" />
       <span
         v-if="node.kind === 'array' && !node.isEmpty"
         class="ml-1 text-xs font-normal text-slate-400"
