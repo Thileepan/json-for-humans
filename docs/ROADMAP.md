@@ -6,7 +6,7 @@
 - Virtualized rendering (windowing) for arrays with tens of thousands of entries
 - Tree diff visualization in comparison mode (side-by-side highlighting inside the tree view)
 - Per-section copy buttons in Document and Cards views
-- Keyboard shortcuts (format, switch views, open search)
+- Keyboard shortcuts (format, switch views) — open/clear search is done (`/`, `Ctrl`/`Cmd`+`K`, `Esc`)
 - Shareable settings/schema via URL fragment (never the JSON itself)
 
 ## Mid term
