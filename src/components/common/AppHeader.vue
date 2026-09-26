@@ -1,4 +1,5 @@
 <script setup>
+import AppTooltip from './AppTooltip.vue'
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import {
@@ -61,13 +62,19 @@ const iconButton =
       </div>
     </a>
 
-    <span
-      class="ml-2 hidden items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-2.5 py-1 text-[0.68rem] font-medium text-brand-700 dark:border-brand-800 dark:bg-brand-900/30 dark:text-brand-300 sm:inline-flex"
-      title="All processing happens locally. Nothing is uploaded or stored."
+    <AppTooltip
+      content="All processing happens locally. Nothing is uploaded or stored."
+      placement="bottom"
+      focusable
+      class="ml-2 hidden sm:inline-flex"
     >
-      <ShieldCheck class="h-3.5 w-3.5" aria-hidden="true" />
-      Your JSON stays in your browser and is never uploaded.
-    </span>
+      <span
+        class="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-2.5 py-1 text-[0.68rem] font-medium text-brand-700 dark:border-brand-800 dark:bg-brand-900/30 dark:text-brand-300"
+      >
+        <ShieldCheck class="h-3.5 w-3.5" aria-hidden="true" />
+        Your JSON stays in your browser and is never uploaded.
+      </span>
+    </AppTooltip>
 
     <div class="ml-auto flex items-center gap-1">
       <button
@@ -85,52 +92,57 @@ const iconButton =
         Compare
       </button>
 
-      <button
-        type="button"
-        :class="iconButton"
-        aria-label="Open custom schema"
-        title="Custom schema"
-        @click="uiStore.schemaOpen = true"
-      >
-        <SlidersHorizontal class="h-4 w-4" aria-hidden="true" />
-      </button>
-      <button
-        type="button"
-        :class="iconButton"
-        aria-label="Open settings"
-        title="Settings"
-        @click="uiStore.settingsOpen = true"
-      >
-        <Settings2 class="h-4 w-4" aria-hidden="true" />
-      </button>
-      <button
-        type="button"
-        :class="iconButton"
-        :aria-label="`Theme: ${theme}. Click to change.`"
-        :title="`Theme: ${theme}`"
-        @click="cycleTheme"
-      >
-        <component :is="themeIcon" class="h-4 w-4" aria-hidden="true" />
-      </button>
-      <button
-        type="button"
-        :class="iconButton"
-        aria-label="Reset workspace"
-        title="Reset workspace"
-        @click="resetWorkspace"
-      >
-        <RotateCcw class="h-4 w-4" aria-hidden="true" />
-      </button>
-      <a
-        href="https://github.com/Thileepan/json-for-humans"
-        target="_blank"
-        rel="noopener noreferrer"
-        :class="iconButton"
-        aria-label="View source on GitHub"
-        title="GitHub repository"
-      >
-        <Github class="h-4 w-4" aria-hidden="true" />
-      </a>
+      <AppTooltip content="Custom schema" placement="bottom">
+        <button
+          type="button"
+          :class="iconButton"
+          aria-label="Open custom schema"
+          @click="uiStore.schemaOpen = true"
+        >
+          <SlidersHorizontal class="h-4 w-4" aria-hidden="true" />
+        </button>
+      </AppTooltip>
+      <AppTooltip content="Settings" placement="bottom">
+        <button
+          type="button"
+          :class="iconButton"
+          aria-label="Open settings"
+          @click="uiStore.settingsOpen = true"
+        >
+          <Settings2 class="h-4 w-4" aria-hidden="true" />
+        </button>
+      </AppTooltip>
+      <AppTooltip :content="`Theme: ${theme}. Click to change.`" placement="bottom">
+        <button
+          type="button"
+          :class="iconButton"
+          :aria-label="`Theme: ${theme}. Click to change.`"
+          @click="cycleTheme"
+        >
+          <component :is="themeIcon" class="h-4 w-4" aria-hidden="true" />
+        </button>
+      </AppTooltip>
+      <AppTooltip content="Clear the editor and start again" placement="bottom">
+        <button
+          type="button"
+          :class="iconButton"
+          aria-label="Reset workspace"
+          @click="resetWorkspace"
+        >
+          <RotateCcw class="h-4 w-4" aria-hidden="true" />
+        </button>
+      </AppTooltip>
+      <AppTooltip content="GitHub repository" placement="bottom">
+        <a
+          href="https://github.com/Thileepan/json-for-humans"
+          target="_blank"
+          rel="noopener noreferrer"
+          :class="iconButton"
+          aria-label="View source on GitHub"
+        >
+          <Github class="h-4 w-4" aria-hidden="true" />
+        </a>
+      </AppTooltip>
     </div>
   </header>
 </template>

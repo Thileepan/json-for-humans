@@ -1,4 +1,5 @@
 <script setup>
+import AppTooltip from '../common/AppTooltip.vue'
 import { FileText, LayoutGrid, ListTree, Braces, Table2 } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -55,11 +56,14 @@ function onKeydown(event, index) {
     >
       <component :is="mode.icon" class="h-3.5 w-3.5" aria-hidden="true" />
       <span class="hidden sm:inline">{{ mode.label }}</span>
-      <span
+      <AppTooltip
         v-if="mode.id === 'table' && tableAvailable && modelValue !== 'table'"
-        class="ml-0.5 inline-block h-1.5 w-1.5 rounded-full bg-brand-400"
-        title="Table view recommended for this data"
-      ></span>
+        content="This data looks tabular — Table view will probably read best."
+        class="ml-0.5"
+      >
+        <span class="inline-block h-1.5 w-1.5 rounded-full bg-brand-400"></span>
+        <span class="sr-only">Table view recommended for this data</span>
+      </AppTooltip>
     </button>
   </div>
 </template>
