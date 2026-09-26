@@ -126,11 +126,14 @@
         gap: 22px;
         font-size: 14px;
       }
-      .nav-links a {
+      /* :not(.btn) so these text-link colours never reach the CTA — a plain
+         `.nav-links a` outranks `.btn-primary` on specificity and would
+         repaint its white label in the muted link colour. */
+      .nav-links a:not(.btn) {
         color: var(--ink-soft);
         text-decoration: none;
       }
-      .nav-links a:hover {
+      .nav-links a:not(.btn):hover {
         color: var(--ink);
       }
 
@@ -605,7 +608,7 @@
         <a href="#features">Features</a>
         <a href="#privacy">Privacy</a>
         <a href="https://github.com/Thileepan/json-for-humans" rel="noopener noreferrer">GitHub</a>
-        <a class="btn btn-primary btn-small" href="./app.html">Open the app</a>
+        <a class="btn btn-primary btn-small" href="./app.html">Paste JSON</a>
       </nav>
     </header>
 
@@ -633,10 +636,10 @@
           <p class="sub">
             Paste any API response, export, or config file and get a clean, readable report your
             whole team can understand — snake_case decoded, dates translated, statuses spelled out.
-            No accounts. No uploads. No AI required.
+            Nothing to install. No accounts. No uploads. No AI required.
           </p>
           <div class="hero-ctas">
-            <a class="btn btn-primary" href="./app.html">Open the app — it's free</a>
+            <a class="btn btn-primary" href="./app.html">Paste your JSON</a>
             <a
               class="btn btn-ghost"
               href="https://github.com/Thileepan/json-for-humans"
@@ -905,10 +908,12 @@
           <a href="https://x.com/sktgthill" rel="noopener noreferrer">Thileepan</a></span
         >
         <span class="links">
-          <a href="./app.html">App</a>
+          <a href="./app.html">Formatter</a>
           <a href="#features">Features</a>
           <a href="#privacy">Privacy</a>
-          <a href="https://github.com/Thileepan/json-for-humans" rel="noopener noreferrer">GitHub</a>
+          <a href="https://github.com/Thileepan/json-for-humans" rel="noopener noreferrer"
+            >GitHub</a
+          >
         </span>
       </div>
     </footer>
